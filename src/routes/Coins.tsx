@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
+import { useQuery } from "react-query";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
+import { fetchCoins } from "../api";
 
 const Container = styled.div`
     padding : 0px 20px;
@@ -60,7 +62,7 @@ const Img = styled.img`
     margin-right:10px;
 `;
 
-interface CoinInterface {
+interface ICoin {
     id: string,
     name: string,
     symbol: string,
@@ -69,11 +71,12 @@ interface CoinInterface {
     is_active: boolean,
     type: string,
 
-
 }
 
 function Coins(){
-    const [coins, setCoins] = useState<CoinInterface[]>([]);
+    const { isLoading, data } = useQuery<ICoin[]>("allCoins",fetchCoins);
+    
+/*     const [coins, setCoins] = useState<CoinInterface[]>([]);
     const [loading, setLoading] = useState(true);
     useEffect(()=> {
         (async()=>{
@@ -82,8 +85,7 @@ function Coins(){
             setCoins(json.slice(0,35));
             setLoading(false);
         })();
-    },[]);
-    console.log(coins);
+    },[]); */
 
     return(
         <Container>
@@ -92,23 +94,21 @@ function Coins(){
                     코인
                 </Title>
             </Header>
-            {loading ? (
+            {isLoading ? (
                 <Loader>
                     "Loading..."
                 </Loader>
 
             ) : (
                 <CoinsList>
-                {coins.map(coin => (
+                {data?.slice(0,35).map(coin => (
                 <Coin key = {coin.id}>
                     <Link to={{
                         pathname: `/${coin.id}`,
                         state: { name: coin.name},
-
                     }}>
                         <Img src={`https://cryptocurrencyliveprices.com/img/${coin.id}.png`}/>
                         {coin.name} &rarr;</Link>
-                    
                 </Coin>
                 ))}
             </CoinsList>
