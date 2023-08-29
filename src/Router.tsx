@@ -13,10 +13,8 @@ function Router(){
                     <Coins/>
                 </Route>
             </Switch>
-        </BrowserRouter>
-        
+        </BrowserRouter>       
     )
-
 }
 
 export default Router;
