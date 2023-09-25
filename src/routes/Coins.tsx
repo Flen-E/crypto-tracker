@@ -23,7 +23,7 @@ const CoinsList = styled.ul``;
 
 const Coin = styled.h1`
     background-color: white;
-    color : ${(props)=> props.theme.bgColor};
+    color : ${(props)=> props.theme.textColor};
     border-radius : 15px;
     margin-bottom:10px;
     a {
@@ -40,8 +40,6 @@ const Coin = styled.h1`
     }
 
 `;
-
-
 
 const Title = styled.h1`
     font-size : 48px;
@@ -73,21 +71,12 @@ interface ICoin {
     type: string,
 
 }
+interface ICoinsProps {
+    toggleDark : () => void;
+}
 
-function Coins(){
+function Coins({toggleDark} : ICoinsProps ){
     const { isLoading, data } = useQuery<ICoin[]>("allCoins",fetchCoins);
-    
-/*     const [coins, setCoins] = useState<CoinInterface[]>([]);
-    const [loading, setLoading] = useState(true);
-    useEffect(()=> {
-        (async()=>{
-            const response = await fetch("https://api.coinpaprika.com/v1/coins");
-            const json = await response.json();
-            setCoins(json.slice(0,35));
-            setLoading(false);
-        })();
-    },[]); */
-
     return(
         <Container>
              <Helmet>
@@ -100,6 +89,7 @@ function Coins(){
                 <Title>
                     코인
                 </Title>
+                <button onClick={toggleDark}>Toggle Dark Mode</button>
             </Header>
             {isLoading ? (
                 <Loader>
@@ -120,7 +110,6 @@ function Coins(){
                 ))}
             </CoinsList>
             )}
-            
         </Container>
     )
 }

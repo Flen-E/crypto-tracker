@@ -33,7 +33,6 @@ const Loader = styled.span`
     display: block;
 `
 
-
 const Overview = styled.div`
   display: flex;
   justify-content: space-between;
@@ -41,6 +40,7 @@ const Overview = styled.div`
   padding: 10px 20px;
   border-radius: 10px;
 `;
+
 const OverviewItem = styled.div`
   display: flex;
   flex-direction: column;
@@ -52,6 +52,7 @@ const OverviewItem = styled.div`
     margin-bottom: 5px;
   }
 `;
+
 const Description = styled.p`
   margin: 20px 0px;
 `;
@@ -78,8 +79,6 @@ const Tab = styled.span<{ isactive: boolean }>`
   }
 `;
 
-
-
 interface RouteParams{
     coinId:string;
 }
@@ -94,8 +93,6 @@ interface ITag{
     id : string;
     name : string;
 }
-
-
 
 interface InfoData{
     id: string;
@@ -157,35 +154,18 @@ interface PriceData{
     };
 
 }
+interface ICoinProps {
+    isDark : boolean,
+}
 
 
-function Coin(){
+function Coin({isDark} : ICoinProps ){
     const { coinId } = useParams<RouteParams>();
     const {state} = useLocation<RouteState>();
-    /* const [loading, setLoading] = useState(true); 
-    const [info, setInfo] = useState<InfoData>();
-    const [priceInfo, setPriceInfo] = useState<PriceData>(); */
     const priceMatch = useRouteMatch("/:coinId/price");
     const chartMatch = useRouteMatch("/:coinId/chart");
     const {isLoading : infoLoading, data:infoData} = useQuery<InfoData>(["info",coinId], () => fetchCoinInfo(coinId));
     const {isLoading : tickersLoading, data:tickersData} = useQuery<PriceData>(["tickers",coinId], () => fetchCoinTickers(coinId),{refetchInterval : 5000,});
-
-   /*  useEffect(()=>{
-        (async()=>{
-            const infoData = await (
-                (await fetch(`https://api.coinpaprika.com/v1/coins/${coinId}`))
-            ).json();
-            console.log(infoData);
-            const priceData = await (
-                await fetch(`https://api.coinpaprika.com/v1/tickers/${coinId}`)
-            ).json();
-            console.log(priceData);
-            setInfo(infoData);
-            setPriceInfo(priceData);
-            setLoading(false);
-        })();
-    },[coinId]);
- */
     const loading = infoLoading || tickersLoading;
 
     return(
@@ -234,10 +214,10 @@ function Coin(){
                 </Overview>
                 <Tabs>
                     <Tab isactive={chartMatch !== null}>
-                    <Link to={`/${coinId}/chart`}>Chart</Link>
+                        <Link to={`/${coinId}/chart`}>Chart</Link>
                     </Tab>
                     <Tab isactive={priceMatch !== null}>
-                    <Link to={`/${coinId}/price`}>Price</Link>
+                        <Link to={`/${coinId}/price`}>Price</Link>
                     </Tab>
                 </Tabs>
 
@@ -248,10 +228,8 @@ function Coin(){
                         <Price/>
                     </Route>
                     <Route path={`/:coinId/chart`}>
-                        <Chart coinId={coinId}/>
+                        <Chart isDark={isDark} coinId={coinId}/>
                     </Route>
-                    
-
                 </Switch>
             </>
             )}
