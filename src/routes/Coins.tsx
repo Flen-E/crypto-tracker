@@ -100,7 +100,7 @@ function Coins(){
 
             ) : (
                 <CoinsList>
-                {data?.slice(0,35).map(coin => (
+                {data?.slice(0,20).map(coin => (
                 <Coin key = {coin.id}>
                     <Link to={{
                         pathname: `/${coin.id}`,

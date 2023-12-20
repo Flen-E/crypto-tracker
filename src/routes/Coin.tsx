@@ -1,4 +1,4 @@
-import { Link, Route, Switch, useLocation, useParams, useRouteMatch } from "react-router-dom";
+import { Link, Route, Switch, useLocation, useParams, useRouteMatch, useHistory } from "react-router-dom";
 import { useState, useEffect } from "react";
 import {Helmet} from "react-helmet";
 import styled from "styled-components";
@@ -6,6 +6,8 @@ import Price from "./Price";
 import Chart from "./Chart";
 import { useQuery } from "react-query";
 import { fetchCoinInfo, fetchCoinTickers } from "../api";
+import { IoMdArrowRoundBack } from "react-icons/io";
+
 
 
 
@@ -26,6 +28,11 @@ const Header = styled.header`
 const Title = styled.h1`
     font-size : 48px;
     color:${(props)=> props.theme.accentColor};
+`;
+const PrevBtn = styled(IoMdArrowRoundBack)`
+    color:${(props)=> props.theme.accentColor};
+    font-size: 50px;
+
 `;
 
 const Loader = styled.span`
@@ -78,6 +85,8 @@ const Tab = styled.span<{ isactive: boolean }>`
     display: block;
   }
 `;
+
+
 
 interface RouteParams{
     coinId:string;
@@ -156,7 +165,11 @@ interface PriceData{
 }
 
 
+
+
+
 function Coin(){
+    const history = useHistory();
     const { coinId } = useParams<RouteParams>();
     const {state} = useLocation<RouteState>();
     const priceMatch = useRouteMatch("/:coinId/price");
@@ -164,6 +177,10 @@ function Coin(){
     const {isLoading : infoLoading, data:infoData} = useQuery<InfoData>(["info",coinId], () => fetchCoinInfo(coinId));
     const {isLoading : tickersLoading, data:tickersData} = useQuery<PriceData>(["tickers",coinId], () => fetchCoinTickers(coinId),{refetchInterval : 5000,});
     const loading = infoLoading || tickersLoading;
+
+    const PrevButton = () =>{
+        history.push("/");
+    }
 
     return(
         <Container>
@@ -174,9 +191,12 @@ function Coin(){
 
             </Helmet>
             <Header>
+            <PrevBtn onClick={PrevButton}/>
+
                 <Title>
                     {state?.name ? state.name : loading ? "Loading..." : infoData?.name}
                 </Title>
+                
             </Header>
             {loading ? (
                 <Loader>
